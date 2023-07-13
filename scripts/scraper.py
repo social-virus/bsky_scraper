@@ -40,7 +40,7 @@ def main():
             print(json.dumps(followers, indent=4))
         
         if args.verbose:
-            print(f"{args.actor} is folloed by {len(followers)} accounts.")
+            print(f"{args.actor} is followed by {len(followers)} accounts.")
 
     if args.follows:
         follows = bsky.get_follows(actor=args.actor, limit=args.limit)
