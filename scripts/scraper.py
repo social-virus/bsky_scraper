@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Dict
 
-import context
+import context  # pylint: disable=unused-import
 
 from lib.arguments import parse_args
 from lib.skyscraper import BskyClient
