@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import sys
 
 from pathlib import Path
 from typing import Dict
@@ -25,7 +26,7 @@ def main():
         bsky.login(args.username, args.password)
     except UnauthorizedError as error:
         print(error.content)
-        exit(1)
+        sys.exit(1)
 
     if args.followers:
         followers = bsky.get_followers(actor=args.actor, limit=args.limit)
