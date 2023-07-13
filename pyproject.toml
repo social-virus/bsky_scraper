@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "blue-skyscraper"
+version = "0.1.0"
+description = "Bsky.Social Scraper"
+authors = ["Social <127993470+social-virus@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "blue_skyscraper"}]
+
+[tool.poetry.dependencies]
+python = "^3.8,<3.12"
+atproto = "^0.0.17"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
