@@ -1,0 +1,3 @@
+atproto
+pandas
+python-dotenv
