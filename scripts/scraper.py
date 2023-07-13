@@ -10,6 +10,7 @@ from atproto.exceptions import UnauthorizedError
 
 import context  # pylint: disable=unused-import
 
+# pylint: disable=no-name-in-module
 from lib.arguments import parse_args
 from lib.skyscraper import BskyClient
 
