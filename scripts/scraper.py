@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from typing import Dict
 
+from atproto.exceptions import UnauthorizedError
+
 import context  # pylint: disable=unused-import
 
 from lib.arguments import parse_args
