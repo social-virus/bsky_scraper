@@ -22,7 +22,7 @@ def main():
     bsky = BskyClient()
 
     try:
-        profile = bsky.login(args.username, args.password)
+        bsky.login(args.username, args.password)
     except UnauthorizedError as error:
         print(error.content)
         exit(1)
