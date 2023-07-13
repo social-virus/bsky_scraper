@@ -2,7 +2,6 @@
 Bluesky Scraper library.
 """
 
-import json
 import time
 
 from dataclasses import asdict, fields
