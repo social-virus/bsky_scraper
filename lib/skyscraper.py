@@ -5,19 +5,23 @@ Bluesky Scraper library.
 import time
 
 from dataclasses import asdict, fields
-from typing import Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, TypeVar, Union
 
-from joblib import delayed, Parallel
+from joblib import delayed, Parallel  # type: ignore
 from random import uniform
 
-from atproto import Client
-from atproto.xrpc_client.models.app.bsky.actor.get_profiles import Response
+from atproto import Client  # type: ignore
+from atproto.xrpc_client.models.app.bsky.actor.get_profile import Response as ProfileResponse   # type: ignore
+from atproto.xrpc_client.models.app.bsky.actor.get_profiles import Response as ProfilesResponse # type: ignore
 
 from .types import ActorT, UrlT
 from .utils import append_bsky_domain, fetch_image
 
 
 BSKY_SUFFIX = ".bsky.social"
+
+
+ResponseT = TypeVar("ResponseT", ProfileResponse, ProfilesResponse)
 
 
 class BskyClient:
@@ -39,7 +43,7 @@ class BskyClient:
 
         return getattr(response, fields(response)[0].name)
 
-    def looping_caller(self, callee: Callable[[Dict], Dict], params: Dict):
+    def looping_caller(self, callee: Callable[[Dict], ResponseT], params: Dict) -> List[Dict[Any, Any]]:
         """Ureasonable use of black magic."""
 
         resp = callee(params)
@@ -77,7 +81,7 @@ class BskyClient:
 
         return self.looping_caller(graph.get_follows, params)
 
-    def get_profile(self, actor: ActorT) -> Response:
+    def get_profile(self, actor: ActorT) -> ProfilesResponse:
         """Get actor profile(s)."""
 
         if isinstance(actor, List):
@@ -87,7 +91,7 @@ class BskyClient:
         actor = append_bsky_domain(actor)
         profile = self.client.bsky.actor.get_profile({"actor": actor})
 
-        return Response(profiles=[profile])
+        return ProfilesResponse(profiles=[profile])
 
     def get_profile_avatar(
         self,
@@ -102,9 +106,9 @@ class BskyClient:
 
         if actor:
             resp = self.get_profile(actor)
-            url = [prof.avatar for prof in resp.profiles if prof and prof.avatar]
+            url = [prof.avatar for prof in resp.profiles if prof and prof.avatar]  # type: ignore
 
-        self.fetch_images(url, folder, threads)
+        self.fetch_images(url, folder, threads)  # type: ignore
 
     def get_profile_banner(
         self,
@@ -119,9 +123,9 @@ class BskyClient:
 
         if actor:
             resp = self.get_profile(actor)
-            url = [prof.banner for prof in resp.profiles if prof and prof.banner]
+            url = [prof.banner for prof in resp.profiles if prof and prof.banner]  # type: ignore
 
-        self.fetch_images(url, folder, threads)
+        self.fetch_images(url, folder, threads)  # type: ignore
     
     @staticmethod
     def fetch_images(url: UrlT, folder: str, threads: int = 4) -> None:
