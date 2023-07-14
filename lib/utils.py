@@ -3,6 +3,15 @@ import requests
 from pathlib import Path
 
 
+BSKY_SUFFIX = ".bsky.social"
+
+
+def append_bsky_domain(actor: str) -> str:
+    if not actor.endswith(BSKY_SUFFIX):
+        actor += BSKY_SUFFIX
+    return actor
+
+
 def fetch_image(url: str, folder: str) -> None:
     filename = url.split("/")[-1]
     if "@" in filename:
