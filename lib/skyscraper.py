@@ -94,35 +94,38 @@ class BskyClient:
         *,
         actor: ActorT = None,
         url: UrlT = None,
-        threads: int = 4,
         folder: str = "downloads",
+        threads: int = 4,
     ) -> None:
         if not (actor or url):
-            raise ValueError(f"Neither actor nor URL are specified.")
+            raise ValueError("Neither actor nor URL are specified.")
 
         if actor:
             resp = self.get_profile(actor)
             url = [prof.avatar for prof in resp.profiles if prof and prof.avatar]
 
-        threads = min(len(url), threads)
-        with Parallel(n_jobs=threads) as jobs:
-            jobs(delayed(fetch_image)(_u, folder) for _u in url)
-    
+        self.fetch_images(url, folder, threads)
+
     def get_profile_banner(
         self,
         *,
         actor: ActorT = None,
         url: UrlT = None,
-        threads: int = 4,
         folder: str = "downloads",
+        threads: int = 4,
     ) -> None:
         if not (actor or url):
-            raise ValueError(f"Neither actor nor URL are specified.")
-        
+            raise ValueError("Neither actor nor URL are specified.")
+
         if actor:
             resp = self.get_profile(actor)
             url = [prof.banner for prof in resp.profiles if prof and prof.banner]
-        
+
+        self.fetch_images(url, folder, threads)
+    
+    @staticmethod
+    def fetch_images(url: UrlT, folder: str, threads: int = 4) -> None:
         threads = min(len(url), threads)
+        
         with Parallel(n_jobs=threads) as jobs:
             jobs(delayed(fetch_image)(_, folder) for _ in url)
