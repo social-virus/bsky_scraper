@@ -11,6 +11,7 @@ packages = [{include = "blue_skyscraper"}]
 python = "^3.8,<3.12"
 atproto = "^0.0.17"
 python-dotenv = "^1.0.0"
+requests = "^2.31.0"
 
 
 [build-system]
