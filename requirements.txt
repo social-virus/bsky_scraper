@@ -1,3 +1,4 @@
 atproto
 pandas
 python-dotenv
+requests
