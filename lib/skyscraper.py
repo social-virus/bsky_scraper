@@ -11,8 +11,12 @@ from joblib import delayed, Parallel  # type: ignore
 from random import uniform
 
 from atproto import Client  # type: ignore
-from atproto.xrpc_client.models.app.bsky.actor.get_profile import Response as ProfileResponse  # type: ignore
-from atproto.xrpc_client.models.app.bsky.actor.get_profiles import Response as ProfilesResponse  # type: ignore
+from atproto.xrpc_client.models.app.bsky.actor.get_profile import (
+    Response as ProfileResponse,  # type: ignore
+)
+from atproto.xrpc_client.models.app.bsky.actor.get_profiles import (
+    Response as ProfilesResponse,  # type: ignore
+)
 
 from .types import ActorT, UrlT
 from .utils import append_bsky_domain, fetch_image
