@@ -6,11 +6,14 @@ import time
 
 from dataclasses import asdict, fields
 from typing import Callable, Dict, List, Union
+
+from joblib import delayed, Parallel
 from random import uniform
 
 from atproto import Client
 from atproto.xrpc_client.models.app.bsky.actor.get_profiles import Response
 
+from .types import ActorT, UrlT
 from .utils import append_bsky_domain, fetch_image
 
 
@@ -74,7 +77,7 @@ class BskyClient:
 
         return self.looping_caller(graph.get_follows, params)
 
-    def get_profile(self, actor: Union[str, List[str]]) -> Response:
+    def get_profile(self, actor: ActorT) -> Response:
         """Get actor profile(s)."""
 
         if isinstance(actor, List):
@@ -85,3 +88,41 @@ class BskyClient:
         profile = self.client.bsky.actor.get_profile({"actor": actor})
 
         return Response(profiles=[profile])
+
+    def get_profile_avatar(
+        self,
+        *,
+        actor: ActorT = None,
+        url: UrlT = None,
+        threads: int = 4,
+        folder: str = "downloads",
+    ) -> None:
+        if not (actor or url):
+            raise ValueError(f"Neither actor nor URL are specified.")
+
+        if actor:
+            resp = self.get_profile(actor)
+            url = [prof.avatar for prof in resp.profiles if prof and prof.avatar]
+
+        threads = min(len(url), threads)
+        with Parallel(n_jobs=threads) as jobs:
+            jobs(delayed(fetch_image)(_u, folder) for _u in url)
+    
+    def get_profile_banner(
+        self,
+        *,
+        actor: ActorT = None,
+        url: UrlT = None,
+        threads: int = 4,
+        folder: str = "downloads",
+    ) -> None:
+        if not (actor or url):
+            raise ValueError(f"Neither actor nor URL are specified.")
+        
+        if actor:
+            resp = self.get_profile(actor)
+            url = [prof.banner for prof in resp.profiles if prof and prof.banner]
+        
+        threads = min(len(url), threads)
+        with Parallel(n_jobs=threads) as jobs:
+            jobs(delayed(fetch_image)(_, folder) for _ in url)
