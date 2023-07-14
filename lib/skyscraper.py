@@ -5,12 +5,14 @@ Bluesky Scraper library.
 import time
 
 from dataclasses import asdict, fields
-from typing import Any, Callable, Dict, List, TypeVar, Union
+from typing import Any, Callable, Dict, List, TypeVar
 
-from joblib import delayed, Parallel  # type: ignore
 from random import uniform
+from joblib import delayed, Parallel  # type: ignore
 
 from atproto import Client  # type: ignore
+
+# pylint: disable=no-name-in-module
 from atproto.xrpc_client.models.app.bsky.actor.get_profile import (
     Response as ProfileResponse,  # type: ignore
 )
@@ -107,6 +109,8 @@ class BskyClient:
         folder: str = "downloads",
         threads: int = 4,
     ) -> None:
+        """Get actor profile avatar."""
+
         if not (actor or url):
             raise ValueError("Neither actor nor URL are specified.")
 
@@ -124,6 +128,8 @@ class BskyClient:
         folder: str = "downloads",
         threads: int = 4,
     ) -> None:
+        """Get actor profile banner."""
+
         if not (actor or url):
             raise ValueError("Neither actor nor URL are specified.")
 
@@ -135,6 +141,8 @@ class BskyClient:
 
     @staticmethod
     def fetch_images(url: UrlT, folder: str, threads: int = 4) -> None:
+        """Threaded image downloader."""
+
         threads = min(len(url), threads)
 
         with Parallel(n_jobs=threads) as jobs:
