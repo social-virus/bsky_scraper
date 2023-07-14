@@ -1,6 +1,7 @@
 import requests
 
 from pathlib import Path
+from typing import Union
 
 
 BSKY_SUFFIX = ".bsky.social"
@@ -12,7 +13,7 @@ def append_bsky_domain(actor: str) -> str:
     return actor
 
 
-def fetch_image(url: str, folder: str) -> None:
+def fetch_image(url: str, folder: Union[str, Path]) -> None:
     filename = url.split("/")[-1]
     if "@" in filename:
         filename = filename.replace("@", ".")
