@@ -11,8 +11,8 @@ from joblib import delayed, Parallel  # type: ignore
 from random import uniform
 
 from atproto import Client  # type: ignore
-from atproto.xrpc_client.models.app.bsky.actor.get_profile import Response as ProfileResponse   # type: ignore
-from atproto.xrpc_client.models.app.bsky.actor.get_profiles import Response as ProfilesResponse # type: ignore
+from atproto.xrpc_client.models.app.bsky.actor.get_profile import Response as ProfileResponse  # type: ignore
+from atproto.xrpc_client.models.app.bsky.actor.get_profiles import Response as ProfilesResponse  # type: ignore
 
 from .types import ActorT, UrlT
 from .utils import append_bsky_domain, fetch_image
@@ -43,7 +43,9 @@ class BskyClient:
 
         return getattr(response, fields(response)[0].name)
 
-    def looping_caller(self, callee: Callable[[Dict], ResponseT], params: Dict) -> List[Dict[Any, Any]]:
+    def looping_caller(
+        self, callee: Callable[[Dict], ResponseT], params: Dict
+    ) -> List[Dict[Any, Any]]:
         """Ureasonable use of black magic."""
 
         resp = callee(params)
@@ -126,10 +128,10 @@ class BskyClient:
             url = [prof.banner for prof in resp.profiles if prof and prof.banner]  # type: ignore
 
         self.fetch_images(url, folder, threads)  # type: ignore
-    
+
     @staticmethod
     def fetch_images(url: UrlT, folder: str, threads: int = 4) -> None:
         threads = min(len(url), threads)
-        
+
         with Parallel(n_jobs=threads) as jobs:
             jobs(delayed(fetch_image)(_, folder) for _ in url)
