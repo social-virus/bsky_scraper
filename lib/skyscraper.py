@@ -5,13 +5,13 @@ Bluesky Scraper library.
 import time
 
 from dataclasses import asdict, fields
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Union
 from random import uniform
 
 from atproto import Client
-from atproto.xrpc_client.models.app.bsky.actor.defs import ProfileViewDetailed
+from atproto.xrpc_client.models.app.bsky.actor.get_profiles import Response
 
-from .utils import fetch_image
+from .utils import append_bsky_domain, fetch_image
 
 
 BSKY_SUFFIX = ".bsky.social"
@@ -73,11 +73,15 @@ class BskyClient:
         graph = self.client.bsky.graph
 
         return self.looping_caller(graph.get_follows, params)
-    
-    def get_profile(self, actor: Union[str, List[str]]) -> ProfileViewDetailed:
+
+    def get_profile(self, actor: Union[str, List[str]]) -> Response:
+        """Get actor profile(s)."""
+
         if isinstance(actor, List):
             actor = [append_bsky_domain(act) for act in actor]
-            return self.bsky.actor.get_profiles(actors=actor)
-        
+            return self.client.bsky.actor.get_profiles({"actors": actor})
+
         actor = append_bsky_domain(actor)
-        return self.bsky.actor.get_profile(actor=actor)
+        profile = self.client.bsky.actor.get_profile({"actor": actor})
+
+        return Response(profiles=[profile])
