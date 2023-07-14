@@ -92,8 +92,8 @@ class BskyClient:
     def get_profile_avatar(
         self,
         *,
-        actor: ActorT = None,
-        url: UrlT = None,
+        actor: ActorT | None = None,
+        url: UrlT | None = None,
         folder: str = "downloads",
         threads: int = 4,
     ) -> None:
@@ -109,8 +109,8 @@ class BskyClient:
     def get_profile_banner(
         self,
         *,
-        actor: ActorT = None,
-        url: UrlT = None,
+        actor: ActorT | None = None,
+        url: UrlT | None = None,
         folder: str = "downloads",
         threads: int = 4,
     ) -> None:
